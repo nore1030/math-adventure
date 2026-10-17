@@ -57,31 +57,28 @@
     svg.appendChild(path);
     wrap.appendChild(svg);
 
+    // 所有关卡默认开放，星星只作记录；仅给「下一关」加呼吸提示
+    var firstOpen = -1;
+    grade.chapters.forEach(function (ch, i) {
+      if (firstOpen === -1 && MX.App.chapterStars(ch.id) === 0) firstOpen = i;
+    });
+
     grade.chapters.forEach(function (ch, i) {
       var stars = MX.App.chapterStars(ch.id);
       var done = stars > 0;
-      var prevId = i > 0 ? grade.chapters[i - 1].id : null;
-      var locked = prevId ? MX.App.chapterStars(prevId) === 0 : false;
       var pos = posFor(i, n);
 
-      var node = U.el('div', 'map-node' + (locked ? ' locked' : '') + (done ? ' done' : ''));
+      var node = U.el('div', 'map-node' + (done ? ' done' : ''));
       node.style.left = pos.x + '%';
       node.style.top = pos.y + '%';
 
-      var btn = U.el('button', 'node-btn', locked ? '🔒' : ch.icon);
-      if (!locked && !done) btn.classList.add('node-pulse');
+      var btn = U.el('button', 'node-btn', ch.icon);
+      if (i === firstOpen) btn.classList.add('node-pulse');
       node.appendChild(btn);
       node.appendChild(U.el('div', 'node-name', ch.title));
-      node.appendChild(U.el('div', 'node-stars', done ? '⭐'.repeat(stars) + '☆'.repeat(3 - stars) : (locked ? '未解锁' : '点击开始')));
+      node.appendChild(U.el('div', 'node-stars', done ? '⭐'.repeat(stars) + '☆'.repeat(3 - stars) : '自由闯关'));
 
       btn.addEventListener('click', function () {
-        if (locked) {
-          MX.audio.wrong();
-          node.classList.add('shake');
-          setTimeout(function () { node.classList.remove('shake'); }, 500);
-          MX.App.toast(root, '先完成上一关吧！');
-          return;
-        }
         MX.audio.tap();
         MX.App.go('lesson', { chapter: ch, grade: grade });
       });
