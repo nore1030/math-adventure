@@ -1,0 +1,13 @@
+{
+  "name": "数学冒险",
+  "short_name": "数学冒险",
+  "description": "和小淘淘一起学小学数学（1-5年级），动画课程 + 互动练习。",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#FFF8E1",
+  "theme_color": "#FFA726",
+  "icons": [
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
